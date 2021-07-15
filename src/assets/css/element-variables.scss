@@ -1,0 +1,55 @@
+@import '_variables';
+
+.el-button {
+  border-radius: 0;
+}
+
+.el-button--primary {
+  background: $red-color;
+  border-color: $red-color;
+
+  &:hover,
+  :active {
+    background: $red-color-hover;
+    border-color: $red-color-hover;
+  }
+}
+
+.el-button--primary.is-active,
+.el-button--primary:focus {
+  background: $red-color;
+  border-color: $red-color;
+}
+
+.el-button--default {
+
+  &:hover,
+  :active {
+    background: #fff;
+    border-color: $red-color-hover;
+    color: $red-color-hover;
+  }
+}
+
+.el-button--default.is-active,
+.el-button--default:focus {
+  background: #fff;
+  border-color: $red-color-hover;
+  color: $red-color-hover;
+}
+
+.el-popper {
+  margin-top: -14px !important;
+  border: none !important;
+  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, .1) !important;
+
+  .el-popper__arrow {
+    display: none;
+  }
+
+  .el-dropdown-menu {
+    border: none !important;
+    border-radius: 0px !important;
+
+  }
+}

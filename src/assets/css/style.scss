@@ -1,0 +1,23 @@
+@import '_fonts';
+@import '_variables';
+@import 'element-variables';
+
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -ms-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  font-size: 12px;
+  font-family: $comm-font !important;
+  color: $text-color !important;
+  min-width: 1200px
+}
