@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-14 17:08:35
- * @LastEditTime: 2021-07-14 13:52:22
+ * @LastEditTime: 2021-07-16 16:45:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\layout\header.vue
@@ -23,7 +23,7 @@
       >
         <div class="name" v-show="show">
           <i class="ico-user"></i>
-          <span id="toggler-btn">哈哈哈哈</span>
+          <span id="toggler-btn">{{ companyName }}</span>
           <i
             :class="isShowExit ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
           ></i>
@@ -43,32 +43,34 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
-
+import { defineComponent, ref, computed } from "vue";
+import { useStore } from "@/store";
+import jsonp from "@/utils";
 export default defineComponent({
   props: {
     text: {
-      type: String as PropType<string>,
+      type: String,
       default: "欢迎入驻",
     },
     detection: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: false,
     },
     show: {
-      type: Boolean as PropType<boolean>,
+      type: Boolean,
       default: true,
     },
   },
   setup() {
     const isShowExit = ref<boolean>(false);
+    const store = useStore();
+    const companyName = computed(() => store.state.user.userInfo.companyName);
     const methods = {
       loginOut() {
-        // this.$http.jsonp("https://sso.jd.com/exit").then(() => {
-        //   this.$store.dispatch("user/clearUserInfo");
-        //   // 钱包退出
-        //   this.$http.jsonp("https://passport.jdpay.com/user/exit.do");
-        // });
+        jsonp("https://sso.jd.com/exit").then(() => {
+          store.dispatch("user/logOut");
+          jsonp("https://passport.jdpay.com/user/exit.do");
+        });
       },
       visibleChange(val: boolean) {
         isShowExit.value = val;
@@ -77,6 +79,7 @@ export default defineComponent({
     return {
       isShowExit,
       ...methods,
+      companyName,
     };
   },
 });

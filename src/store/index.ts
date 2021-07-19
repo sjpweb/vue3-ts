@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-13 15:09:27
- * @LastEditTime: 2021-07-15 16:52:53
+ * @LastEditTime: 2021-07-16 09:39:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\store\index.ts
@@ -9,9 +9,9 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
-import { RootStateTypes } from './interface'
-import user from './modules/user'
-import enterUrl from './modules/enterUrl'
+import { RootStateTypes, AllStateTypes } from './interface'
+import user from './modules/user/index'
+import enterUrl from './modules/enterUrl/index'
 
 export default createStore<RootStateTypes>({
   plugins: [
@@ -19,20 +19,12 @@ export default createStore<RootStateTypes>({
       storage: window.sessionStorage
     })
   ],
-  state:{
-    homeFlag: false,
-    serviceFlag: false
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
     user,
     enterUrl
   }
 })
 export const key : InjectionKey<Store<RootStateTypes>> = Symbol('vue-store')
-export function useStore() {
-  return baseUseStore(key)
+export function useStore<T = AllStateTypes>() {
+  return baseUseStore<T>(key)
 }

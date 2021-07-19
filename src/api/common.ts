@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-04-19 17:49:57
- * @LastEditTime: 2021-07-15 15:24:33
+ * @LastEditTime: 2021-07-16 14:52:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\api\common.ts
@@ -13,6 +13,10 @@ export default {
     getUserInfo: async (param?: any) => {
       return await Api.post('/api/b/login', param, true)
     },
+      // 入驻时选角色接口
+  setUserRole: async (param: any) => {
+    return await Api.postForm('/api/b/entry/chooseUserType', param)
+  },
   // // 上传图片
   // upload: async param:any => {
   //   return await Api.post('/api/b/common/file/upload', param)
@@ -28,10 +32,6 @@ export default {
   // // 获取用户状态
   // getUserState: async param => {
   //   return await Api.get('/api/b/common/getUserInfo', param)
-  // },
-  // // 入驻时选角色接口
-  // setUserRole: async param => {
-  //   return await Api.postForm('/api/b/entry/chooseUserType', param)
   // },
   // // 获取实名认证地址
   // getRealNameUrl: async param => {

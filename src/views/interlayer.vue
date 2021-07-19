@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-13 15:09:27
- * @LastEditTime: 2021-07-15 16:45:30
+ * @LastEditTime: 2021-07-16 09:36:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\interlayer.vue
@@ -28,7 +28,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
-    store.dispatch("user/getUserInfo");
+    store.dispatch("user/login");
   },
 });
 </script>

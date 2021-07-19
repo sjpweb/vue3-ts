@@ -2,7 +2,7 @@
  * @Author: sph
  * @Date: 2021-02-24 17:39:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-15 16:36:57
+ * @LastEditTime: 2021-07-16 14:50:22
  * @Description: 
  */
 
@@ -96,7 +96,6 @@ const handlerResult = (resolve: any, reject: any, result: any, isLogin:boolean|u
   // 错误
   if (errorCode.includes(data.code)) {
     ElMessage({
-      type: 'warning',
       center: true,
       duration: 2000,
       message: data.msg
@@ -139,7 +138,6 @@ const ajax = ({url, type, options, isLogin, others = {}}: AxiosRequestConfig) =>
           router.replace('/login')
         }
         ElMessage({
-          type: 'warning',
           center: true,
           duration: 2000,
           message: '服务器开小差了~'
@@ -150,15 +148,15 @@ const ajax = ({url, type, options, isLogin, others = {}}: AxiosRequestConfig) =>
 }
 
 export default {
-  async get(url: string, options: any, isLogin: boolean) {
+  async get(url: string, options?: any, isLogin?: boolean) {
     return await ajax({url, type:'get', options, isLogin})
   },
   // post请求，参数类型为json格式
-  async post(url: string, options: any, isLogin: boolean) {
+  async post(url: string, options?: any, isLogin?: boolean) {
     return await ajax({url, type:'post', options, isLogin})
   },
   // post请求，参数为form格式
-  async postForm(url: string, options: any, isLogin: boolean) {
+  async postForm(url: string, options?: any, isLogin?: boolean) {
     let paramsStr = ''
     const keys = options ? Object.keys(options) : [],
       requestHeader = {

@@ -1,10 +1,10 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-13 13:35:43
- * @LastEditTime: 2021-07-15 17:21:03
+ * @LastEditTime: 2021-07-15 17:08:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \vue3-ts\vue.config.js
+ * @FilePath: \jzyf-static3\vue.config.js
  */
 // const path = require("path");
 // 代码上传插件
@@ -67,7 +67,7 @@ module.exports = {
     }
     config.plugins.push(
       new WebpackScpUploadPlugin({
-        host: "xxx", // ip
+        host: "11.50.49.179",
         password: "Zl^Xt1Qb*D2020@yeah",
         local: "dist",
         path: `/home/www${url}`,
