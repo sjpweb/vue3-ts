@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-16 10:10:42
- * @LastEditTime: 2021-07-16 16:47:34
+ * @LastEditTime: 2021-07-22 15:51:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\register.vue
@@ -34,7 +34,7 @@
         <i class="el-icon-warning-outline f-orgn"></i>
         一旦入驻不可更改用户身份，且同一企业只能入驻一次，不可重复入驻，请您谨慎选择
       </div>
-      <el-button class="btn btn-red" type="primary" @click="onSubmit()">
+      <el-button class="btn" type="primary" @click="onSubmit()">
         开始入驻
       </el-button>
     </el-form>
@@ -42,60 +42,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
 import CHeader from "@/layout/header.vue";
 import CFooter from "@/layout/footer.vue";
 import { useStore } from "@/store";
 import api from "@/api/common";
 import { ElMessage, ElMessageBox } from "element-plus";
-export default defineComponent({
-  components: {
-    CHeader,
-    CFooter,
-  },
-  setup() {
-    const store = useStore();
-    enum Identity {
-      Purchaser = 1,
-      Facilitator,
-      Branch,
-    }
-    const options = reactive([
-      { text: "采购商", img: "ico1", role: Identity.Purchaser },
-      { text: "服务商", img: "ico2", role: Identity.Facilitator },
-      { text: "网点", img: "ico3", role: Identity.Branch },
-    ]);
-    const role = ref<number>(0);
-    const region = ref<string>("");
-    const methods = {
-      onSubmit() {
-        if (!role.value) {
-          ElMessage("请选择您要入驻的用户身份！");
-          return;
-        }
-        ElMessageBox.confirm(
-          `是否确认入驻身份为${region.value}，确认后不可更改`
-        )
-          .then(() => {
-            api.setUserRole({ userType: role.value }).then(() => {
-              store.dispatch("user/getUserInfo");
-            });
-          })
-          .catch((cancel) => cancel);
-      },
-      onchange(val: number) {
-        role.value = val;
-      },
-    };
-    return {
-      options,
-      role,
-      region,
-      ...methods,
-    };
-  },
-});
+
+const store = useStore();
+enum Identity {
+  Purchaser = 1,
+  Facilitator,
+  Branch,
+  Worker,
+  Dismantlingplant,
+}
+const options = reactive([
+  { text: "采购商", img: "ico1", role: Identity.Purchaser },
+  { text: "服务商", img: "ico2", role: Identity.Facilitator },
+  { text: "网点", img: "ico3", role: Identity.Branch },
+  { text: "拆解厂", img: "ico4", role: Identity.Dismantlingplant },
+]);
+const role = ref<number>(0);
+const region = ref<string>("");
+function onSubmit() {
+  if (!role.value) {
+    ElMessage("请选择您要入驻的用户身份！");
+    return;
+  }
+  ElMessageBox.confirm(`是否确认入驻身份为${region.value}，确认后不可更改`)
+    .then(() => {
+      api.setUserRole({ userType: role.value }).then(() => {
+        store.dispatch("user/getUserInfo");
+      });
+    })
+    .catch((cancel) => cancel);
+}
+function onchange(val: number) {
+  role.value = val;
+}
 </script>
 <style scoped lang="scss">
 .register-wrap {
@@ -149,6 +135,10 @@ export default defineComponent({
           background-image: url(~@/assets/images/register-role3.png);
           background-size: 100%;
         }
+        &.ico4 {
+          background-image: url(~@/assets/images/register-role4.png);
+          background-size: 100%;
+        }
       }
     }
     .tips {
@@ -164,6 +154,7 @@ export default defineComponent({
       margin: 24px auto;
       display: block;
       font-size: 15px;
+      border-radius: 4px;
     }
   }
 }

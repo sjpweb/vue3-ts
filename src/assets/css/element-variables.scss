@@ -1,5 +1,27 @@
 @import '_variables';
 
+
+.el-button--default {
+  border-radius: 0;
+
+  &:hover {
+    color: $red-color;
+    background-color: #fff;
+    border-color: #DCDFE6;
+  }
+}
+
+.el-button--primary {
+  background: $red-color;
+  border-color: $red-color;
+  border-radius: 0;
+
+  &:hover,
+  :active {
+    background: $red-color-hover;
+  }
+}
+
 .el-popper {
   transform: translateY(-14px) !important;
   border: none !important;

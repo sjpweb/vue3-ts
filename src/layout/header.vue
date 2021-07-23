@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-14 17:08:35
- * @LastEditTime: 2021-07-16 16:45:00
+ * @LastEditTime: 2021-07-22 17:13:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\layout\header.vue
@@ -42,47 +42,38 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+<script setup lang="ts">
+import { ref, computed, defineProps } from "vue";
 import { useStore } from "@/store";
 import jsonp from "@/utils";
-export default defineComponent({
-  props: {
-    text: {
-      type: String,
-      default: "欢迎入驻",
-    },
-    detection: {
-      type: Boolean,
-      default: false,
-    },
-    show: {
-      type: Boolean,
-      default: true,
-    },
+defineProps({
+  text: {
+    type: String,
+    default: "欢迎入驻",
   },
-  setup() {
-    const isShowExit = ref<boolean>(false);
-    const store = useStore();
-    const companyName = computed(() => store.state.user.userInfo.companyName);
-    const methods = {
-      loginOut() {
-        jsonp("https://sso.jd.com/exit").then(() => {
-          store.dispatch("user/logOut");
-          jsonp("https://passport.jdpay.com/user/exit.do");
-        });
-      },
-      visibleChange(val: boolean) {
-        isShowExit.value = val;
-      },
-    };
-    return {
-      isShowExit,
-      ...methods,
-      companyName,
-    };
+  detection: {
+    type: Boolean,
+    default: false,
+  },
+  show: {
+    type: Boolean,
+    default: true,
   },
 });
+const isShowExit = ref<boolean>(false);
+const store = useStore();
+const companyName = computed(() => store.state.user.userInfo.companyName);
+function loginOut() {
+  // 清除cookes
+  jsonp("https://sso.jd.com/exit").then(() => {
+    store.dispatch("user/logOut");
+    // 清除钱包cookes
+    jsonp("https://passport.jdpay.com/user/exit.do");
+  });
+}
+function visibleChange(val: boolean) {
+  isShowExit.value = val;
+}
 </script>
 
 <style scoped lang="scss">

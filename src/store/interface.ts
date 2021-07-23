@@ -1,19 +1,20 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-15 15:48:47
- * @LastEditTime: 2021-07-16 09:39:54
+ * @LastEditTime: 2021-07-22 10:55:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\store\interface.ts
  */
 
-export interface RootStateTypes {}
 
-type UserInfo =  {
+export type UserInfo =  {
   companyName: string
   jdPin: string
   userType: number
   popFlag: number
+  odoUrl: string
+  rnAuthIsOverdue: boolean
 }
 export interface UserInfoStateTypes {
   userInfo: UserInfo
@@ -28,7 +29,7 @@ export interface EnterUrlStateTypes {
   tempWalletUrl: string
 }
 
-export interface AllStateTypes extends RootStateTypes {
+export interface RootStateTypes {
   user: UserInfoStateTypes
   enterUrl: EnterUrlStateTypes
 }

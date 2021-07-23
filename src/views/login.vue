@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-13 15:09:27
- * @LastEditTime: 2021-07-15 13:32:25
+ * @LastEditTime: 2021-07-22 15:49:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\login.vue
@@ -27,26 +27,15 @@
     <c-footer></c-footer>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 import CHeader from "@/layout/header.vue";
 import CFooter from "@/layout/footer.vue";
 import jdUrl from "@/config";
-export default defineComponent({
-  components: {
-    CHeader,
-    CFooter,
-  },
-  setup() {
-    const src = ref<string>("");
-    const { protocol, host, pathname } = location;
-    const url = `${protocol}//${host}${pathname}#/home`;
-    src.value = jdUrl.jdUrl.login.replace("{URL}", url);
-    return {
-      src,
-    };
-  },
-});
+const src = ref<string>("");
+const { protocol, host, pathname } = location;
+const url = `${protocol}//${host}${pathname}#/home`;
+src.value = jdUrl.jdUrl.login.replace("{URL}", url);
 </script>
 <style scoped lang="scss">
 .login-box {
