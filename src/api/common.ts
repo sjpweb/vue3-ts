@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-04-19 17:49:57
- * @LastEditTime: 2021-07-23 11:50:28
+ * @LastEditTime: 2021-07-23 18:09:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\api\common.ts
@@ -60,22 +60,22 @@ export default {
   openWallet: async (param: {returnUrl: string}) => {
     return await Api.postForm('/api/b/entry/openWallet', param)
   },
-  // // 获取手机验证码
-  // getPhoneCode: async param => {
-  //   return await Api.postForm('/api/b/entry/sendContactsSms', param)
-  // },
+  // 获取手机验证码
+  getPhoneCode: async (param?: any) => {
+    return await Api.postForm('/api/b/entry/sendContactsSms', param)
+  },
   // // 获取邮箱验证码
   // getEmailCode: async param => {
   //   return await Api.postForm('/api/b/entry/sendContactsEmail', param)
   // },
-  // // 提交联系方式
-  // updateUserMessage: async param => {
-  //   return await Api.post('/api/b/entry/maintainContacts', param)
-  // },
-  // // 获取联系方式
-  // queryPhoneInfoByUserId: async param => {
-  //   return await Api.get('/api/b/entry/getContactsInfo', param)
-  // },
+  // 提交联系方式
+  updateUserMessage: async (param?: any) => {
+    return await Api.post('/api/b/entry/maintainContacts', param)
+  },
+  // 获取联系方式
+  queryPhoneInfoByUserId: async (param?: any) => {
+    return await Api.get('/api/b/entry/getContactsInfo', param)
+  },
   // //获取授权品牌
   // getAllBrand: async param => {
   //   return await Api.get('/api/b/entry/getBrandInfo', param)
@@ -92,26 +92,26 @@ export default {
   getRejectInfo: async (param?: any) => {
     return await Api.get('/api/b/entry/getRejectInfo', param)
   },
-  // // 获取合同
-  // getContract: async param => {
-  //   return await Api.get('/api/b/entry/getAgreementInfo', param)
-  // },
-  // // 获取签署协议短信验证码
-  // getAuthCode: async param => {
-  //   return await Api.postForm('/api/b/entry/sendMaintainSignerSms', param)
-  // },
+  // 获取合同
+  getContract: async (param?: any) => {
+    return await Api.get('/api/b/entry/getAgreementInfo', param)
+  },
+  // 获取签署协议短信验证码
+  getAuthCode: async (param?: any) => {
+    return await Api.postForm('/api/b/entry/sendMaintainSignerSms', param)
+  },
   // 签署协议-二次验证码
   getSecondAuthCode: async (param?: any) => {
     return await Api.postForm('/api/b/entry/sendSignAgreementSms', param)
   },
-  // // 提交盖章人信息
-  // upUser: async param => {
-  //   return await Api.post('/api/b/entry/maintainSignerInfo', param)
-  // },
-  // // 签署合同
-  // signContract: async param => {
-  //   return await Api.post('/api/b/entry/signAgreement', param)
-  // },
+  // 提交盖章人信息
+  upUser: async (param?: any) => {
+    return await Api.post('/api/b/entry/maintainSignerInfo', param)
+  },
+  // 签署合同
+  signContract: async (param?: any) => {
+    return await Api.post('/api/b/entry/signAgreement', param)
+  },
   // 网点是否被服务商录入
   isMatchingService: async (param?: any) => {
     return await Api.postForm('/api/b/entry/matchingServiceProvider', param)

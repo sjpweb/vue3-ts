@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 16:57:01
- * @LastEditTime: 2021-07-22 11:37:29
+ * @LastEditTime: 2021-07-23 18:23:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\contactsForm.vue
@@ -10,7 +10,7 @@
   <div>
     <div>
       <el-form
-        ref="form"
+        ref="formDome"
         class="contactsForm"
         :rules="rules"
         label-width="112px"
@@ -68,7 +68,7 @@
       <!-- 网点才显示 -->
       <el-form
         v-show="userType === 3"
-        ref="basicForm"
+        ref="basicFormDome"
         class="basicForm"
         :rules="basicFormRules"
         label-width="126px"
@@ -93,13 +93,14 @@
       </el-form>
       <el-form
         v-show="userType === 5"
-        ref="oldMachineForm"
+        ref="oldMachineFormDome"
         class="basicForm"
         :rules="oldMachineFormRules"
         label-width="126px"
         style="width:526px;"
         :model="oldMachineForm"
       >
+        <!-- <div class="tit">网点基础信息</div> -->
         <div class="cont factory">
           <el-form-item label="旧机收货地址：" prop="oldMachineArea">
             <el-cascader
@@ -138,355 +139,355 @@
 </template>
 <script lang="ts" setup>
 import { checkPhone, checkEmail, checkName } from "@/utils/validate";
-import CountDown from "@/components/CCountDown";
+import CountDown from "@/components/CCountDown/index.vue";
 import api from "@/api/common";
-export default {
-  data() {
-    return {
-      userType: this.$store.state.user.userInfo.userType,
-      userId: this.$store.state.user.userInfo.id,
-      btnText: "",
-      props: {
-        lazy: true,
-        value: "jdAreaId",
-        label: "name",
-        leaf: "leaf",
-        expandTrigger: "hover",
-        lazyLoad(node, resolve) {
-          const { level, data } = node;
-          if (level === 0) {
-            api.getProvinceList({}).then((res) => {
-              resolve(res.data);
-            });
-          }
-          if (level > 0) {
-            api.getAreaList({ parent: data.jdAreaId }).then((res) => {
-              if (res.data.length) {
-                resolve(res.data);
-              } else {
-                return resolve(null);
-              }
-            });
-          }
-        },
-      },
-      telDisable: false,
-      emailDisable: false,
-      form: {
-        userName: "",
-        userPhone: "",
-        mobileCode: "",
-        userEmail: "",
-        emailCode: "",
-      },
-      flag: false,
-      rules: {
-        userName: [{ required: true, trigger: "blur", validator: checkName }],
-        userPhone: [{ required: true, trigger: "blur", validator: checkPhone }],
-        mobileCode: [
-          {
-            required: true,
-            trigger: "blur",
-            validator: (rule, value, callback) => {
-              if (!value) {
-                return callback(new Error("请输入手机验证码"));
-              } else {
-                if (!this.phoneFlag) {
-                  return callback(new Error("手机验证码错误"));
-                } else if (!this.phoneExpireFlag) {
-                  return callback(new Error("手机验证码已过期"));
-                }
-                callback();
-              }
-            },
-          },
-        ],
-        userEmail: [{ required: true, trigger: "blur", validator: checkEmail }],
-        emailCode: [
-          {
-            required: true,
-            trigger: "blur",
-            validator: (rule, value, callback) => {
-              if (!value) {
-                return callback(new Error("请输入邮箱验证码"));
-              } else {
-                if (!this.emailFlag) {
-                  return callback(new Error("邮箱验证码错误"));
-                } else if (!this.emailExpireFlag) {
-                  return callback(new Error("邮箱验证码已过期"));
-                }
-                callback();
-              }
-            },
-          },
-        ],
-      },
-      basicForm: {
-        areaId: [],
-        userAddress: "",
-      },
-      basicFormRules: {
-        areaId: [
-          {
-            required: true,
-            message: "网点所在地区不能为空",
-            trigger: "change",
-          },
-        ],
-        userAddress: [
-          {
-            required: true,
-            message: "网点详细地址不能为空",
-            trigger: "change",
-          },
-        ],
-      },
-      oldMachineForm: {
-        oldMachineArea: [],
-        userAddress: "",
-        oldmachineDeliveryContractNo: "",
-      },
-      oldMachineFormRules: {
-        oldMachineArea: [
-          { required: true, message: "旧机收货地址不能为空", trigger: "blur" },
-        ],
-        userAddress: [
-          { required: true, message: "详细地址不能为空", trigger: "blur" },
-        ],
-        oldmachineDeliveryContractNo: [
-          { required: true, message: "合同编号不能为空", trigger: "blur" },
-        ],
-      },
-      phoneCheck: false,
-      EmailCheck: false,
-      phoneFlag: true,
-      phoneExpireFlag: true,
-      emailFlag: true,
-      emailExpireFlag: true,
-      placeholder: "",
-    };
-  },
-  components: {
-    CountDown,
-  },
-  created() {
-    this.userType === 1 && (this.btnText = "下一步，人工审核");
-    this.userType === 2 && (this.btnText = "下一步，提报能力");
-    this.userType === 3 && (this.btnText = "下一步，签署入驻协议");
-    this.userType === 5 && (this.btnText = "下一步，提交人工审核");
-    // 网点不需要获取回显数据
-    if (this.userType !== 3) {
-      this.init();
+import { useStore } from "@/store";
+import { ref, reactive, onBeforeMount, defineEmits } from "vue";
+import { ElMessage } from "element-plus";
+const store = useStore();
+const userType = store.state.user.userInfo.userType;
+const emit = defineEmits(["artificialCheck"]);
+const btnText = ref<string>("");
+const props = {
+  lazy: true,
+  value: "jdAreaId",
+  label: "name",
+  leaf: "leaf",
+  expandTrigger: "hover",
+  lazyLoad(node, resolve) {
+    const { level, data } = node;
+    if (level === 0) {
+      api.getProvinceList({}).then((res) => {
+        resolve(res.data);
+      });
+    }
+    if (level > 0) {
+      api.getAreaList({ parent: data.jdAreaId }).then((res) => {
+        if (res.data.length) {
+          resolve(res.data);
+        } else {
+          return resolve(null);
+        }
+      });
     }
   },
-  methods: {
-    async init() {
-      const { data } = await api.queryPhoneInfoByUserId({ id: this.userId });
-      this.form = data;
-      if (this.userType === 5) {
-        this.oldMachineForm.userAddress = data.userAddress;
-        this.oldMachineForm.oldmachineDeliveryContractNo =
-          data.oldmachineDeliveryContractNo;
-        this.oldMachineForm.oldMachineArea[0] =
-          data.userProvinceId && data.userProvinceId;
-        this.oldMachineForm.oldMachineArea[1] =
-          data.userCityId && data.userCityId;
-        this.oldMachineForm.oldMachineArea[2] =
-          data.userCountyId && data.userCountyId;
-        this.oldMachineForm.oldMachineArea[3] =
-          data.userStreetId && data.userStreetId;
-
-        let areaId = [];
-        data.userProvinceId && areaId.push(data.userProvinceId);
-        data.userCityId && areaId.push(data.userCityId);
-        data.userCountyId && areaId.push(data.userCountyId);
-        data.userStreetId && areaId.push(data.userStreetId);
-        const list = [];
-        if (areaId[0]) {
-          await this.getArea(api.getProvinceList, areaId, list, 0);
-        }
-        if (areaId[1]) {
-          await this.getArea(api.getAreaList, areaId, list, 1);
-        }
-        if (areaId[2]) {
-          await this.getArea(api.getAreaList, areaId, list, 2);
-        }
-        if (areaId[3]) {
-          await this.getArea(api.getAreaList, areaId, list, 3);
-        }
-        let str = "";
-
-        list.forEach((item, index) => {
-          if (item) {
-            str += `${item}${index === list.length - 1 ? "" : "/"}`;
-          }
-        });
-        this.placeholder = str;
-      }
-    },
-    async getArea(api, arr, list, i) {
-      const { data } = await api({ parent: i ? arr[i - 1] : null });
-      const tempArr = data.filter((item) => item.jdAreaId === arr[i]);
-      if (tempArr.length) {
-        list.push(tempArr[0].name);
-      }
-    },
-    // 获取手机验证码
-    getTelCode() {
-      this.$refs.form.validateField("userPhone", (val) => {
-        if (!val) {
-          this.phoneCheck = true;
-          api.getPhoneCode({ mobile: this.form.userPhone }).then((res) => {
-            // this.form.mobileCode = res.data
-            this.$warning(res.msg);
-            this.phoneCheck = false;
-          });
-        } else {
-          this.phoneCheck = false;
-        }
-      });
-    },
-    // 获取邮箱验证码
-    getEmailCode() {
-      this.$refs.form.validateField("userEmail", (val) => {
-        if (!val) {
-          this.EmailCheck = true;
-          api.getEmailCode({ email: this.form.userEmail }).then((res) => {
-            this.$warning(res.msg);
-            this.EmailCheck = false;
-          });
-        } else {
-          this.EmailCheck = false;
-        }
-      });
-    },
-    /**
-     * update,根据userType不同,展示不同的页面,1代表采购商,2代表服务商,3代表网点
-     * @param {string} 参数2 - 代表含义.
-     */
-    upData() {
-      switch (this.userType) {
-        //采购商
-        case 1:
-          this.$parent.artificialCheck && this.$parent.artificialCheck(1, 1);
-          break;
-        //服务商
-        case 2:
-          this.$parent.artificialCheck && this.$parent.artificialCheck(3);
-          break;
-        //网点
-        case 3:
-          this.$parent.artificialCheck && this.$parent.artificialCheck(3);
-        //拆解厂
-        case 5:
-          this.$parent.artificialCheck && this.$parent.artificialCheck(3);
-          break;
-        default:
-          break;
-      }
-    },
-    async btnNext() {
-      let flag = false;
-      let OutletsFlag = false;
-      let nextFlag = false;
-      this.form.id = this.userId;
-      let obj = {
-        userName: this.form.userName,
-        userPhone: this.form.userPhone,
-        userEmail: this.form.userEmail,
-        mobileCode: this.form.mobileCode,
-        emailCode: this.form.emailCode,
-      };
-      this.$refs.form.validate(async (valid) => {
-        if (valid) {
-          flag = true;
-        }
-      });
-      if (this.userType === 3) {
-        this.$refs.basicForm.validate((valids) => {
-          if (valids) {
-            const areaId = this.basicForm.areaId;
-            obj.userProvinceId = areaId[0] || "";
-            obj.userCityId = areaId[1] || "";
-            obj.userCountyId = areaId[2] || "";
-            obj.userStreetId = areaId[3] || "";
-            obj.userAddress = this.basicForm.userAddress;
-            OutletsFlag = true;
-          } else {
-            OutletsFlag = false;
-          }
-        });
-      }
-      if (this.userType === 5) {
-        this.$refs.oldMachineForm.validate((valids) => {
-          if (valids) {
-            const oldMachineArea = this.oldMachineForm.oldMachineArea;
-            obj.userProvinceId = oldMachineArea[0] || "";
-            obj.userCityId = oldMachineArea[1] || "";
-            obj.userCountyId = oldMachineArea[2] || "";
-            obj.userStreetId = oldMachineArea[3] || "";
-            obj.userAddress = this.oldMachineForm.userAddress;
-            obj.oldmachineDeliveryContractNo = this.oldMachineForm.oldmachineDeliveryContractNo;
-            OutletsFlag = true;
-          } else {
-            OutletsFlag = false;
-          }
-        });
-      }
-
-      nextFlag =
-        this.userType === 3 || this.userType === 5 ? flag && OutletsFlag : flag;
-      if (nextFlag) {
-        api
-          .updateUserMessage(obj)
-          .then((result) => {
-            if (result.code === 3006) {
-              this.phoneFlag = false;
-              this.$refs.form.validateField("mobileCode");
-              this.phoneFlag = true;
-              return;
-            } else if (result.code === 3005) {
-              this.phoneExpireFlag = false;
-              this.$refs.form.validateField("mobileCode");
-              this.phoneExpireFlag = true;
-              return;
-            }
-            if (result.code === 3009) {
-              this.emailFlag = false;
-              this.$refs.form.validateField("emailCode");
-              this.emailFlag = true;
-              return;
-            } else if (result.code === 3008) {
-              this.emailExpireFlag = false;
-              this.$refs.form.validateField("emailCode");
-              this.emailExpireFlag = true;
-              return;
-            }
-            if (this.userType === 3) {
-              api.updateEntrySteps().then((res) => {
-                if (res.code === 1000) {
-                  this.upData();
-                  flag = false;
-                  OutletsFlag = false;
-                  nextFlag = false;
-                }
-              });
-              return;
-            }
-            this.upData();
-            flag = false;
-            OutletsFlag = false;
-            nextFlag = false;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    },
-  },
 };
+const telDisable = ref<boolean>(false);
+const emailDisable = ref<boolean>(false);
+const phoneCheck = ref<boolean>(false);
+const EmailCheck = ref<boolean>(false);
+const phoneFlag = ref<boolean>(false);
+const phoneExpireFlag = ref<boolean>(false);
+const emailFlag = ref<boolean>(false);
+const emailExpireFlag = ref<boolean>(false);
+const placeholder = ref<string>("");
+const formDome = ref(null as HTMLFormElement | null);
+const basicFormDome = ref(null as HTMLFormElement | null);
+const oldMachineFormDome = ref(null as HTMLFormElement | null);
+interface FormType {
+  userName: string;
+  userPhone: string;
+  mobileCode: string;
+  userEmail: string;
+  emailCode: string;
+}
+interface BasicFormType {
+  userProvinceId: string | number;
+  userCityId: string | number;
+  userCountyId: string | number;
+  userStreetId: string | number;
+  userAddress: string;
+}
+interface OldMachineFormType extends BasicFormType {
+  oldMachineArea: number[];
+  oldmachineDeliveryContractNo: string;
+}
+let form = reactive<FormType>({
+  userName: "",
+  userPhone: "",
+  mobileCode: "",
+  userEmail: "",
+  emailCode: "",
+});
+const basicForm = reactive<BasicFormType>({
+  userProvinceId: "",
+  userCityId: "",
+  userCountyId: "",
+  userStreetId: "",
+  userAddress: "",
+});
+const oldMachineForm = reactive<OldMachineFormType>({
+  userProvinceId: "",
+  userCityId: "",
+  userCountyId: "",
+  userStreetId: "",
+  userAddress: "",
+  oldMachineArea: [],
+  oldmachineDeliveryContractNo: "",
+});
+const rules = {
+  userName: [{ required: true, trigger: "blur", validator: checkName }],
+  userPhone: [{ required: true, trigger: "blur", validator: checkPhone }],
+  mobileCode: [
+    {
+      required: true,
+      trigger: "blur",
+      validator: (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error("请输入手机验证码"));
+        } else {
+          if (!phoneFlag.value) {
+            return callback(new Error("手机验证码错误"));
+          } else if (!phoneExpireFlag.value) {
+            return callback(new Error("手机验证码已过期"));
+          }
+          callback();
+        }
+      },
+    },
+  ],
+  userEmail: [{ required: true, trigger: "blur", validator: checkEmail }],
+  emailCode: [
+    {
+      required: true,
+      trigger: "blur",
+      validator: (rule, value, callback: (...args: any[]) => any) => {
+        if (!value) {
+          return callback(new Error("请输入邮箱验证码"));
+        } else {
+          if (!emailFlag.value) {
+            return callback(new Error("邮箱验证码错误"));
+          } else if (!emailExpireFlag.value) {
+            return callback(new Error("邮箱验证码已过期"));
+          }
+          callback();
+        }
+      },
+    },
+  ],
+};
+const oldMachineFormRules = {
+  oldMachineArea: [
+    { required: true, message: "旧机收货地址不能为空", trigger: "blur" },
+  ],
+  userAddress: [
+    { required: true, message: "详细地址不能为空", trigger: "blur" },
+  ],
+  oldmachineDeliveryContractNo: [
+    { required: true, message: "合同编号不能为空", trigger: "blur" },
+  ],
+};
+const basicFormRules = {
+  areaId: [
+    { required: true, message: "网点所在地区不能为空", trigger: "change" },
+  ],
+  userAddress: [
+    { required: true, message: "网点详细地址不能为空", trigger: "change" },
+  ],
+};
+
+onBeforeMount(() => {
+  userType === 1 && (btnText.value = "下一步，人工审核");
+  userType === 2 && (btnText.value = "下一步，提报能力");
+  userType === 3 && (btnText.value = "下一步，签署入驻协议");
+  userType === 5 && (btnText.value = "下一步，提交人工审核");
+  // 网点不需要获取回显数据
+  if (userType !== 3) {
+    init();
+  }
+});
+async function init() {
+  const { data }: any = await api.queryPhoneInfoByUserId();
+  form = data;
+  if (userType === 5) {
+    oldMachineForm.userAddress = data.userAddress;
+    oldMachineForm.oldmachineDeliveryContractNo =
+      data.oldmachineDeliveryContractNo;
+    oldMachineForm.oldMachineArea[0] =
+      data.userProvinceId && data.userProvinceId;
+    oldMachineForm.oldMachineArea[1] = data.userCityId && data.userCityId;
+    oldMachineForm.oldMachineArea[2] = data.userCountyId && data.userCountyId;
+    oldMachineForm.oldMachineArea[3] = data.userStreetId && data.userStreetId;
+    let areaId = [];
+    data.userProvinceId && areaId.push(data.userProvinceId);
+    data.userCityId && areaId.push(data.userCityId);
+    data.userCountyId && areaId.push(data.userCountyId);
+    data.userStreetId && areaId.push(data.userStreetId);
+    const list: string[] = [];
+    if (areaId[0]) {
+      await getArea(api.getProvinceList, areaId, list, 0);
+    }
+    if (areaId[1]) {
+      await getArea(api.getAreaList, areaId, list, 1);
+    }
+    if (areaId[2]) {
+      await getArea(api.getAreaList, areaId, list, 2);
+    }
+    if (areaId[3]) {
+      await getArea(api.getAreaList, areaId, list, 3);
+    }
+    let str = "";
+    list.forEach((item, index) => {
+      if (item) {
+        str += `${item}${index === list.length - 1 ? "" : "/"}`;
+      }
+    });
+    placeholder.value = str;
+  }
+}
+async function getArea(
+  api: (...args: any[]) => any,
+  arr: number[],
+  list: string[],
+  i: number
+) {
+  const { data } = await api({ parent: i ? arr[i - 1] : null });
+  const tempArr = data.filter(
+    (item: { jdAreaId: number }) => item.jdAreaId === arr[i]
+  );
+  if (tempArr.length) {
+    list.push(tempArr[0].name);
+  }
+}
+// 获取手机验证码
+function getTelCode() {
+  if (formDome.value) {
+    formDome.value.validateField("userPhone", (val: boolean) => {
+      if (!val) {
+        phoneCheck.value = true;
+        api.getPhoneCode({ mobile: form.userPhone }).then((res: any) => {
+          ElMessage({
+            center: true,
+            duration: 2000,
+            message: res.msg,
+          });
+          phoneCheck.value = false;
+        });
+      } else {
+        phoneCheck.value = false;
+      }
+    });
+  }
+}
+/**
+ * update,根据userType不同,展示不同的页面,1代表采购商,2代表服务商,3代表网点
+ * @param {string} 参数2 - 代表含义.
+ */
+function upData() {
+  switch (userType) {
+    //采购商
+    case 1:
+      emit("artificialCheck", 1, 1);
+      break;
+    //服务商
+    case 2:
+      emit("artificialCheck", 3);
+      break;
+    //网点
+    case 3:
+      emit("artificialCheck", 3);
+      break;
+    //拆解厂
+    case 5:
+      emit("artificialCheck", 3);
+      break;
+    default:
+      break;
+  }
+}
+async function btnNext() {
+  let flag = false;
+  let OutletsFlag = false;
+  let nextFlag = false;
+  let obj = {
+    userName: form.userName,
+    userPhone: form.userPhone,
+    userEmail: form.userEmail,
+    mobileCode: form.mobileCode,
+    emailCode: form.emailCode,
+  };
+  if (formDome.value) {
+    formDome.value.validate(async (valid: boolean) => {
+      if (valid) {
+        flag = true;
+      }
+    });
+  }
+  if (userType === 3 && basicFormDome.value) {
+    basicFormDome.value.validate((valids: boolean) => {
+      if (valids) {
+        Object.assign(obj, {
+          ...basicForm,
+        });
+        OutletsFlag = true;
+      } else {
+        OutletsFlag = false;
+      }
+    });
+  }
+  if (userType === 5 && oldMachineFormDome.value) {
+    oldMachineFormDome.value.validate((valids: boolean) => {
+      if (valids) {
+        Object.assign(obj, {
+          ...oldMachineForm,
+        });
+        OutletsFlag = true;
+      } else {
+        OutletsFlag = false;
+      }
+    });
+  }
+  nextFlag = userType === 3 || userType === 5 ? flag && OutletsFlag : flag;
+  if (nextFlag) {
+    api
+      .updateUserMessage(obj)
+      .then((result: any) => {
+        if (result.code === 3006) {
+          phoneFlag.value = false;
+          formDome.value && formDome.value.validateField("mobileCode");
+          phoneFlag.value = true;
+          return;
+        } else if (result.code === 3005) {
+          phoneExpireFlag.value = false;
+          formDome.value && formDome.value.validateField("mobileCode");
+          phoneExpireFlag.value = true;
+          return;
+        }
+        if (result.code === 3009) {
+          emailFlag.value = false;
+          formDome.value && formDome.value.validateField("emailCode");
+          emailFlag.value = true;
+          return;
+        } else if (result.code === 3008) {
+          emailExpireFlag.value = false;
+          formDome.value && formDome.value.validateField("emailCode");
+          emailExpireFlag.value = true;
+          return;
+        }
+        if (userType === 3) {
+          api.updateEntrySteps().then((res: any) => {
+            if (res.code === 1000) {
+              upData();
+              flag = false;
+              OutletsFlag = false;
+              nextFlag = false;
+            }
+          });
+          return;
+        }
+        upData();
+        flag = false;
+        OutletsFlag = false;
+        nextFlag = false;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+}
 </script>
 <style scoped lang="scss">
+@import "style";
 .contactsForm {
   width: 904px;
   margin: auto;

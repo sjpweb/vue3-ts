@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 19:59:22
- * @LastEditTime: 2021-07-22 11:37:53
+ * @LastEditTime: 2021-07-23 16:30:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\contractForm.vue
@@ -9,7 +9,7 @@
 <template>
   <div>
     <el-form
-      ref="form"
+      ref="formDome"
       class="contractForm"
       :rules="rules"
       label-width="136px"
@@ -34,7 +34,7 @@
         </el-form-item>
         <el-form-item label="签署人手机号：" class="tel" prop="mobile">
           <el-input v-model="form.mobile" placeholder="请输入常用手机号">
-            <template slot="prepend">中国 +86</template>
+            <template #prepend>中国 +86</template>
           </el-input>
         </el-form-item>
         <el-form-item label="短信验证码：" prop="authCode">
@@ -56,94 +56,116 @@
     </el-form>
   </div>
 </template>
-<script>
+<script lang="ts" setup>
 import { checkPhone } from "@/utils/validate";
 import api from "@/api/common";
-export default {
-  data() {
-    return {
-      isExist: null,
-      telDisable: false,
-      form: {
-        transactorName: "",
-        idCardNum: "",
-        mobile: "",
-        authCode: "",
-      },
-      rules: {
-        transactorName: [
-          { required: true, message: "请输入联系人姓名", trigger: "blur" },
-        ],
-        idCardNum: [
-          { required: true, message: "请输入盖章人身份证号", trigger: "blur" },
-        ],
-        mobile: [{ required: true, trigger: "blur", validator: checkPhone }],
-        authCode: [
-          { required: true, message: "请输入手机验证码", trigger: "blur" },
-        ],
-      },
-      telCode: "获取验证码",
-      timer: null,
-    };
-  },
-  methods: {
-    goUrl() {},
-    // 定时器
-    timeEvent() {
-      let sec = 120;
-      this.telDisable = true;
-      // 定时器启动需要1秒时间先改变文字
-      this.telCode = "120s后重新获取";
-      this.timer = setInterval(() => {
-        sec--;
-        this.telCode = sec + "s后重新获取";
-        if (sec < 0) {
-          this.telDisable = false;
-          this.telCode = "获取验证码";
-          clearInterval(this.timer);
-        }
-      }, 1000);
-    },
-    // 获取手机验证码
-    getTelCode() {
-      // 查询人员是否存在ebs系统中 有返回 data数组  没有返回data空数组
-      // api.queryOrgUser().then(res => {
-      //   if (res.data.length) {
-      //     this.isExist = '1'
-      //     this.form.userId = res.data[0].userId
-      //   } else {
-      //     this.isExist = '0'
-      //   }
-      //   const obj = {
-      //     usage: this.isExist,
-      //     mobile: this.form.mobile
-      //   }
-      //   this.form.usage = this.isExist
-      //   // 发送短信验证码  usage 0 新建用户 1更新用户 2签署合同
-      //   api.getAuthCode(obj).then(() => {
-      //     this.timeEvent()
-      //     this.$warning('短信已发送成功')
-      //   })
-      // })
-      api.getAuthCode({ mobile: this.form.mobile }).then(() => {
-        this.timeEvent();
-        this.$warning("短信已发送成功");
-      });
-    },
-    validate() {
-      return new Promise((resolve, reject) => {
-        this.$refs.form.validate((valid) => {
-          if (valid) resolve(this.form);
-          else reject();
-        });
-      });
-    },
-  },
-  destroyed() {
-    // 离开清除定时器
-    clearInterval(this.timer);
-  },
+import { reactive, ref, onDeactivated } from "vue";
+import { ElMessage } from "element-plus";
+const formDome = ref(null as HTMLFormElement | null);
+const telDisable = ref<boolean>(false);
+const telCode = ref<string>("获取验证码");
+interface FormType {
+  transactorName: string;
+  idCardNum: string;
+  mobile: string;
+  authCode: string;
+}
+const form = reactive<FormType>({
+  transactorName: "",
+  idCardNum: "",
+  mobile: "",
+  authCode: "",
+});
+const rules = {
+  transactorName: [
+    { required: true, message: "请输入联系人姓名", trigger: "blur" },
+  ],
+  idCardNum: [
+    { required: true, message: "请输入盖章人身份证号", trigger: "blur" },
+  ],
+  mobile: [{ required: true, trigger: "blur", validator: checkPhone }],
+  authCode: [{ required: true, message: "请输入手机验证码", trigger: "blur" }],
 };
+// eslint-disable-next-line
+let timer: NodeJS.Timeout;
+function timeEvent() {
+  let sec = 120;
+  telDisable.value = true;
+  // 定时器启动需要1秒时间先改变文字
+  telCode.value = "120s后重新获取";
+  timer = setInterval(() => {
+    sec--;
+    telCode.value = sec + "s后重新获取";
+    if (sec < 0) {
+      telDisable.value = false;
+      telCode.value = "获取验证码";
+      clearInterval(timer);
+    }
+  }, 1000);
+}
+// 获取手机验证码
+function getTelCode() {
+  api.getAuthCode({ mobile: form.mobile }).then(() => {
+    timeEvent();
+    ElMessage({
+      center: true,
+      duration: 2000,
+      message: "短信已发送成功",
+    });
+  });
+}
+function validate() {
+  return new Promise((resolve, reject) => {
+    if (formDome.value)
+      formDome.value.validate((valid: boolean) => {
+        if (valid) resolve(form);
+        else reject();
+      });
+  });
+}
+// 离开清除定时器
+onDeactivated(() => {
+  clearInterval(timer);
+});
+//   methods: {
+//     // 定时器
+//     timeEvent() {
+//       let sec = 120;
+//       this.telDisable = true;
+//       // 定时器启动需要1秒时间先改变文字
+//       this.telCode = "120s后重新获取";
+//       this.timer = setInterval(() => {
+//         sec--;
+//         this.telCode = sec + "s后重新获取";
+//         if (sec < 0) {
+//           this.telDisable = false;
+//           this.telCode = "获取验证码";
+//           clearInterval(this.timer);
+//         }
+//       }, 1000);
+//     },
+//     // 获取手机验证码
+//     getTelCode() {
+
+//       api.getAuthCode({ mobile: this.form.mobile }).then(() => {
+//         this.timeEvent();
+//         this.$warning("短信已发送成功");
+//       });
+//     },
+//     validate() {
+//       return new Promise((resolve, reject) => {
+//         this.$refs.form.validate((valid) => {
+//           if (valid) resolve(this.form);
+//           else reject();
+//         });
+//       });
+//     },
+//   },
+//   destroyed() {
+//     // 离开清除定时器
+//     clearInterval(this.timer);
+//   },
+// };
 </script>
 <style scoped lang="scss">
 .contractForm {

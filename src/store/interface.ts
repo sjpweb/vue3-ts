@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-15 15:48:47
- * @LastEditTime: 2021-07-22 10:55:09
+ * @LastEditTime: 2021-07-23 17:12:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\store\interface.ts
