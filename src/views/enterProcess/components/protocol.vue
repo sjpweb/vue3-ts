@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 10:54:18
- * @LastEditTime: 2021-07-23 16:12:54
+ * @LastEditTime: 2021-07-27 14:12:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\protocol.vue
@@ -13,14 +13,14 @@
       <div>
         <el-checkbox v-model="checked">我已阅读并同意</el-checkbox>
         <div class="btns">
-          <button
-            type="button"
+          <el-button
+            type="primary"
             :disabled="disableds"
             class="btn-red btn"
             @click="seal"
           >
             签署协议
-          </button>
+          </el-button>
         </div>
       </div>
     </div>
@@ -60,7 +60,18 @@ import api from "@/api/common";
 import { ref, reactive, defineEmits } from "vue";
 import { ElMessage } from "element-plus";
 const emit = defineEmits(["succeedState"]);
-let userInfo = reactive({});
+interface FormType {
+  transactorName?: string;
+  idCardNum?: string;
+  mobile: string;
+  authCode?: string;
+}
+let userInfo = reactive<FormType>({
+  transactorName: "",
+  idCardNum: "",
+  mobile: "",
+  authCode: "",
+});
 const checked = ref<boolean>(false);
 const show = ref<boolean>(true);
 const dialogVisible = ref<boolean>(false);
@@ -89,9 +100,10 @@ function seal() {
   }
   dialogVisible.value = true;
 }
+
 async function onSubmit() {
   if (btnText.value === "下一步，二次验证" && formDome.value) {
-    formDome.value.validate().then((obj) => {
+    formDome.value.validate().then((obj: FormType) => {
       userInfo = obj;
       api.upUser(obj).then((res: any) => {
         if (res.code === 1000) {
@@ -104,7 +116,7 @@ async function onSubmit() {
   }
   if (btnText.value === "确认签署") {
     if (isSendPhone.value && verifyFormDome.value) {
-      verifyFormDome.value.validate().then((obj) => {
+      verifyFormDome.value.validate().then((obj: FormType) => {
         const upObj = {
           idCardNum: userInfo.idCardNum,
           mobile: obj.mobile,

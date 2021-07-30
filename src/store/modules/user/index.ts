@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-15 19:00:27
- * @LastEditTime: 2021-07-22 10:55:21
+ * @LastEditTime: 2021-07-28 14:26:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\store\modules\user\index.ts
@@ -18,6 +18,7 @@ import { Module } from 'vuex'
 import router from '@/router'
 import api from '@/api/common'
 import url from '@/config'
+import jsonp from "@/utils";
 import {RootStateTypes, UserInfoStateTypes} from '@/store/interface'
 
 // 后台地址
@@ -37,9 +38,26 @@ const user: Module<UserInfoStateTypes,RootStateTypes> = {
     serviceFlag: false
   },
   mutations:{
-    GET_USER_INFO(state, val) {
-      state.userInfo = val
+    GET_USER_INFO(state, user) {
+      state.userInfo = user
     },
+    GET_HOME_WINDOWS(state, flag) {
+      state.homeFlag = flag
+    },
+    GET_Service_HOME_WINDOWS(state, flag) {
+      state.serviceFlag = flag
+    },
+    LOG_OUT(state) {
+      state.userInfo = {
+        companyName: '',
+        jdPin: '',
+        userType: 0,
+        popFlag: 0,
+        odoUrl: '',
+        rnAuthIsOverdue: false
+      }
+      router.replace('/login')
+    }
   },
   actions:{
     async login({ commit, dispatch }) {
@@ -83,10 +101,25 @@ const user: Module<UserInfoStateTypes,RootStateTypes> = {
       code === 4003 && router.replace('/enterProcess')
       // 用户实名认证过期
       code === 4004 && router.replace('/realNameoverdue')
+      dispatch('homeWindows', true)
+      dispatch('homeServiceWindows', true)
     },
-    logOut({commit}){
-      router.replace('/login')
-      commit('GET_USER_INFO', {})
+    homeServiceWindows({ commit }, flag) {
+      commit('GET_Service_HOME_WINDOWS', flag)
+    },
+    homeWindows({ commit }, flag) {
+      commit('GET_HOME_WINDOWS', flag)
+    },
+    logOut({ commit }) {
+        // 清除cookes
+      jsonp("https://sso.jd.com/exit").then(() => {
+        commit('LOG_OUT')
+        // 清除钱包cookes
+        jsonp("https://passport.jdpay.com/user/exit.do");
+      })
+    },
+    setUserInfo({ commit }, data) {
+      commit('GET_USER_INFO', data)
     }
   }
 }

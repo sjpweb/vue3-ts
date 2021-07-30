@@ -2,7 +2,7 @@
  * @Author: sph
  * @Date: 2021-02-24 17:39:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-16 14:50:22
+ * @LastEditTime: 2021-07-28 13:07:26
  * @Description: 
  */
 
@@ -64,6 +64,7 @@ const handlerResult = (resolve: any, reject: any, result: any, isLogin:boolean|u
     4009 //不是企业用户
   ]
   if (loginCode.includes(data.code)) {
+    store.dispatch('user/logOut')
     router.replace('/login')
     return
   }
@@ -101,7 +102,7 @@ const handlerResult = (resolve: any, reject: any, result: any, isLogin:boolean|u
       message: data.msg
     })
     reject(data)
-    isLogin && router.replace('/login')
+    isLogin && store.dispatch('user/logOut')
     return
   }
   if (status === 200) {
@@ -112,6 +113,11 @@ const handlerResult = (resolve: any, reject: any, result: any, isLogin:boolean|u
 }
 
 const ajax = ({url, type, options, isLogin, others = {}}: AxiosRequestConfig) => {
+  const jdPin = store.state.user.userInfo.jdPin
+  const headers: any = {
+    'X-Requested-With': 'XMLHttpRequest'
+  }
+  if (jdPin) headers.jdpin = encodeURIComponent(jdPin)
   const HOSTUrl = PLATFORM_HOST + url
   return new Promise((resolve, reject) => {
     //解决http get请求缓存问题
@@ -127,15 +133,13 @@ const ajax = ({url, type, options, isLogin, others = {}}: AxiosRequestConfig) =>
       data: type !== 'get' ? options : null,
       //CORS跨域是否携带cookie
       withCredentials: true,
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-      }
+      headers: headers
     })
       .then(result => handlerResult(resolve, reject, result, isLogin ))
       .catch(() => {
         // 获取角色接口报错 回到登录
         if (isLogin) {
-          router.replace('/login')
+          store.dispatch('user/logOut')
         }
         ElMessage({
           center: true,

@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-04-19 17:49:57
- * @LastEditTime: 2021-07-23 18:09:42
+ * @LastEditTime: 2021-07-26 09:58:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\api\common.ts
@@ -64,10 +64,10 @@ export default {
   getPhoneCode: async (param?: any) => {
     return await Api.postForm('/api/b/entry/sendContactsSms', param)
   },
-  // // 获取邮箱验证码
-  // getEmailCode: async param => {
-  //   return await Api.postForm('/api/b/entry/sendContactsEmail', param)
-  // },
+  // 获取邮箱验证码
+  getEmailCode: async (param?: any) => {
+    return await Api.postForm('/api/b/entry/sendContactsEmail', param)
+  },
   // 提交联系方式
   updateUserMessage: async (param?: any) => {
     return await Api.post('/api/b/entry/maintainContacts', param)
@@ -76,18 +76,18 @@ export default {
   queryPhoneInfoByUserId: async (param?: any) => {
     return await Api.get('/api/b/entry/getContactsInfo', param)
   },
-  // //获取授权品牌
-  // getAllBrand: async param => {
-  //   return await Api.get('/api/b/entry/getBrandInfo', param)
-  // },
-  // //提报服务能力
-  // insertProvider: async param => {
-  //   return await Api.post('/api/b/entry/maintainServiceCapability', param)
-  // },
-  // // 获取服务能力
-  // queryProviderByUserId: async param => {
-  //   return await Api.get('/api/b/entry/getServiceCapabilityInfo', param)
-  // },
+  //获取授权品牌
+  getAllBrand: async (param?: any) => {
+    return await Api.get('/api/b/entry/getBrandInfo', param)
+  },
+  //提报服务能力
+  insertProvider: async (param?: any) => {
+    return await Api.post('/api/b/entry/maintainServiceCapability', param)
+  },
+  // 获取服务能力
+  queryProviderByUserId: async (param?: any) => {
+    return await Api.get('/api/b/entry/getServiceCapabilityInfo', param)
+  },
   // 获取驳回信息
   getRejectInfo: async (param?: any) => {
     return await Api.get('/api/b/entry/getRejectInfo', param)

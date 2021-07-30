@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-20 09:32:05
- * @LastEditTime: 2021-07-22 18:49:56
+ * @LastEditTime: 2021-07-27 11:47:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\modules\servicPprovider\servicPprovider.vue
@@ -17,7 +17,10 @@
       @artificialCheck="artificialCheck"
     ></CState>
     <ContactsForm v-if="show == 2"></ContactsForm>
-    <ServiceAbilityForm v-if="show == 3"></ServiceAbilityForm>
+    <ServiceAbilityForm
+      @artificialCheck="artificialCheck"
+      v-if="show == 3"
+    ></ServiceAbilityForm>
     <Protocol v-if="show == 4"></Protocol>
   </div>
 </template>
@@ -31,6 +34,9 @@ import {
 } from "@/config/state";
 import CSteps from "@/components/CSteps/index.vue";
 import CState from "@/components/CState/index.vue";
+import ContactsForm from "@/views/enterProcess/components/contactsForm.vue";
+import ServiceAbilityForm from "./serviceAbilityForm.vue";
+import Protocol from "@/views/enterProcess/components/protocol.vue";
 import api from "@/api/common";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
@@ -170,6 +176,7 @@ async function openWallet() {
 }
 // 控制当前展示
 async function artificialCheck(showValue: number, stateValue: number) {
+  console.log(123);
   // 对应组件
   show.value = showValue;
   // 人工审核状态

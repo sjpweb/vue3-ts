@@ -1,35 +1,30 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-19 16:55:09
- * @LastEditTime: 2021-07-23 10:21:28
+ * @LastEditTime: 2021-07-27 14:05:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\components\CCountDown\index.vue
 -->
 <template>
-  <div>
-    <el-button
-      type="button"
-      :class="[!isDisabled ? className : 'isDisabled']"
-      :style="{
-        width: width + 'px',
-        height: height + 'px',
-      }"
-      :disabled="isDisabled"
-      @click="getCode"
-    >
-      {{ btnText }}
-    </el-button>
-  </div>
+  <button
+    type="button"
+    :class="[!isDisabled ? 'send-btn' : 'isDisabled']"
+    :style="{
+      width: width + 'px',
+      height: height + 'px',
+      float: 'right',
+    }"
+    :disabled="isDisabled"
+    @click="getCode"
+  >
+    {{ btnText }}
+  </button>
 </template>
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch, onDeactivated } from "vue";
 const props = defineProps({
-  className: {
-    type: String,
-    default: "lbtn-red",
-  },
   btnName: {
     type: String,
     default: "获取验证码",
@@ -51,7 +46,7 @@ const props = defineProps({
     default: false,
   },
 });
-const btnText = ref<string>("");
+const btnText = ref<string>("获取验证码");
 const isDisabled = ref<boolean>(false);
 const emit = defineEmits(["click"]);
 // eslint-disable-next-line

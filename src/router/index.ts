@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-13 15:09:27
- * @LastEditTime: 2021-07-22 09:31:57
+ * @LastEditTime: 2021-07-30 13:46:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\router\index.ts
@@ -12,6 +12,43 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/interlayer'
+  },
+  {
+    path: '/index',
+    name: 'index',
+    component: () => import('@/views/portal/index.vue'),
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: () => import('@/views/portal/home/home.vue')
+      },
+      {
+        path: '/ispList',
+        name: 'ispList',
+        component: () => import('@/views/portal/serviceMarket/ispList.vue')
+      },
+      // {
+      //   path: '/ispSign',
+      //   name: 'ispSign',
+      //   component: () => import('@/views/ispSign/ispSign')
+      // },
+      // {
+      //   path: '/protocol',
+      //   name: 'protocol',
+      //   component: () => import('@/views/ispSign/protocol')
+      // },
+      // {
+      //   path: '/succeed',
+      //   name: 'succeed',
+      //   component: () => import('@/views/ispSign/succeed')
+      // },
+      // {
+      //   path: '/ispIndex',
+      //   name: 'ispIndex',
+      //   component: () => import('@/views/ispIndex/ispIndex')
+      // }
+    ]
   },
   {
     path: '/login',
@@ -59,6 +96,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/factorySucceed',
     name: 'factorySucceed',
     component: () => import('@/views/enterProcess/modules/factory/factorySucceed.vue')
+  },
+  // 禁用页面
+  {
+    path: '/forbidden',
+    name: 'forbidden',
+    component: () => import('@/views/forbidden/index.vue')
   },
   {
     path: '/register',

@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-16 10:10:42
- * @LastEditTime: 2021-07-22 15:51:50
+ * @LastEditTime: 2021-07-28 14:53:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\register.vue
@@ -155,59 +155,6 @@ function onchange(val: number) {
       display: block;
       font-size: 15px;
       border-radius: 4px;
-    }
-  }
-}
-.header-box {
-  color: $text-color;
-  background: $white-color;
-  box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.08);
-  position: relative;
-  height: 100px;
-  line-height: 100px;
-  border-bottom: 1px solid #ebebeb;
-  padding: 0 100px;
-  .logo {
-    margin-right: 152px;
-    img {
-      vertical-align: middle;
-      height: 20px;
-    }
-    span {
-      vertical-align: middle;
-      margin-left: 32px;
-      font-size: 20px;
-      height: 14px;
-      line-height: 14px;
-      display: inline-block;
-    }
-  }
-  .user-login {
-    font-size: 15px;
-    a,
-    span {
-      cursor: pointer;
-      color: $text-dgray-color;
-      border-right: solid 1px $border-color;
-      padding: 0 14px;
-      height: 15px;
-      line-height: 15px;
-      display: inline-block;
-      &:last-child {
-        border-right: none;
-      }
-    }
-    i {
-      margin-right: 8px;
-      &.ico-user {
-        width: 15px;
-        height: 15px;
-        display: inline-block;
-        background: url(~@/assets/images/ico-user.png) no-repeat center;
-        background-size: contain;
-        vertical-align: middle;
-        margin-bottom: 2px;
-      }
     }
   }
 }

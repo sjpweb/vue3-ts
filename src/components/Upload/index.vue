@@ -48,7 +48,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, reactive, watch, defineEmits } from "vue";
+import { defineProps, ref, watch, defineEmits } from "vue";
 import { ElMessage } from "element-plus";
 const props = defineProps({
   imageUrl: {
@@ -72,23 +72,23 @@ interface FileListType {
   url: string;
 }
 const emit = defineEmits(["uploadFile", "handleRemove"]);
-let fileList = reactive<FileListType[]>([]);
+let fileList = ref<FileListType[]>([]);
 const dialogImageUrl = ref<string>("");
 const dialogVisible = ref<boolean>(false);
 const disabled = ref<boolean>(false);
 if (!props.imageUrl) {
-  fileList = [];
+  fileList.value = [];
 } else {
-  fileList.push({ url: props.imageUrl });
+  fileList.value.push({ url: props.imageUrl });
 }
 
 watch(
   () => props.imageUrl,
   (newVal) => {
     if (!newVal) {
-      fileList = [];
+      fileList.value = [];
     } else {
-      !fileList.length && fileList.push({ url: props.imageUrl });
+      !fileList.value.length && fileList.value.push({ url: props.imageUrl });
     }
   }
 );

@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-16 15:57:33
- * @LastEditTime: 2021-07-22 11:17:09
+ * @LastEditTime: 2021-07-28 11:18:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\utils\index.ts
@@ -16,6 +16,11 @@ import originJSONP from 'jsonp'
 //   }
 //   return url ? url.substring(1) : ''
 // }
+ /**
+  * jsonp请求
+  * url    => 接口
+  * option => 传参 
+  */
 export default function jsonp(url: string,option?: any) {
   url += (url.indexOf('?')<0?'?':'&')
   return new Promise(function(resolve,reject) {
@@ -28,7 +33,6 @@ export default function jsonp(url: string,option?: any) {
       })
   })
 }
-
 export function parseTime(time: any, cFormat?: any) {
     if (arguments.length === 0) {
       return null

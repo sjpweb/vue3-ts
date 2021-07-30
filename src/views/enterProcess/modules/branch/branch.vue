@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-20 09:32:05
- * @LastEditTime: 2021-07-22 18:50:29
+ * @LastEditTime: 2021-07-27 14:15:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\modules\branch\branch.vue
@@ -31,6 +31,7 @@ import {
 } from "@/config/state";
 import CSteps from "@/components/CSteps/index.vue";
 import CState from "@/components/CState/index.vue";
+import ContactsForm from "../../components/contactsForm.vue";
 import CProviderList from "./providerList.vue";
 import api from "@/api/common";
 import { useStore } from "@/store";

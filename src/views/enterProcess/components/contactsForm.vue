@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 16:57:01
- * @LastEditTime: 2021-07-23 18:23:02
+ * @LastEditTime: 2021-07-27 13:56:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\contactsForm.vue
@@ -78,7 +78,11 @@
         <div class="tit">网点基础信息</div>
         <div class="cont">
           <el-form-item label="网点所在地区：" prop="areaId">
-            <el-cascader clearable v-model="basicForm.areaId" :props="props">
+            <el-cascader
+              clearable
+              v-model="basicForm.userStreetId"
+              :props="props"
+            >
             </el-cascader>
           </el-form-item>
           <el-form-item label="网点详细地址：" prop="userAddress">
@@ -100,7 +104,6 @@
         style="width:526px;"
         :model="oldMachineForm"
       >
-        <!-- <div class="tit">网点基础信息</div> -->
         <div class="cont factory">
           <el-form-item label="旧机收货地址：" prop="oldMachineArea">
             <el-cascader
@@ -131,9 +134,9 @@
       </el-form>
     </div>
     <div class="btns">
-      <button type="button" class="btn-red btn" @click="btnNext">
+      <el-button type="primary" class="btn-red btn" @click="btnNext">
         {{ btnText }}
-      </button>
+      </el-button>
     </div>
   </div>
 </template>
@@ -154,15 +157,15 @@ const props = {
   label: "name",
   leaf: "leaf",
   expandTrigger: "hover",
-  lazyLoad(node, resolve) {
+  lazyLoad(node: any, resolve: (...age: any) => void) {
     const { level, data } = node;
     if (level === 0) {
-      api.getProvinceList({}).then((res) => {
+      api.getProvinceList({}).then((res: any) => {
         resolve(res.data);
       });
     }
     if (level > 0) {
-      api.getAreaList({ parent: data.jdAreaId }).then((res) => {
+      api.getAreaList({ parent: data.jdAreaId }).then((res: any) => {
         if (res.data.length) {
           resolve(res.data);
         } else {
@@ -172,8 +175,6 @@ const props = {
     }
   },
 };
-const telDisable = ref<boolean>(false);
-const emailDisable = ref<boolean>(false);
 const phoneCheck = ref<boolean>(false);
 const EmailCheck = ref<boolean>(false);
 const phoneFlag = ref<boolean>(false);
@@ -232,7 +233,11 @@ const rules = {
     {
       required: true,
       trigger: "blur",
-      validator: (rule, value, callback) => {
+      validator: (
+        rule: null,
+        value: boolean,
+        callback: (...args: any[]) => any
+      ) => {
         if (!value) {
           return callback(new Error("请输入手机验证码"));
         } else {
@@ -251,7 +256,11 @@ const rules = {
     {
       required: true,
       trigger: "blur",
-      validator: (rule, value, callback: (...args: any[]) => any) => {
+      validator: (
+        rule: null,
+        value: boolean,
+        callback: (...args: any[]) => any
+      ) => {
         if (!value) {
           return callback(new Error("请输入邮箱验证码"));
         } else {
@@ -365,6 +374,26 @@ function getTelCode() {
         });
       } else {
         phoneCheck.value = false;
+      }
+    });
+  }
+}
+// 获取邮箱验证码
+function getEmailCode() {
+  if (formDome.value) {
+    formDome.value.validateField("userEmail", (val: boolean) => {
+      if (!val) {
+        EmailCheck.value = true;
+        api.getEmailCode({ email: form.userEmail }).then((res: any) => {
+          ElMessage({
+            center: true,
+            duration: 2000,
+            message: res.msg,
+          });
+          EmailCheck.value = false;
+        });
+      } else {
+        EmailCheck.value = false;
       }
     });
   }
@@ -487,7 +516,6 @@ async function btnNext() {
 }
 </script>
 <style scoped lang="scss">
-@import "style";
 .contactsForm {
   width: 904px;
   margin: auto;

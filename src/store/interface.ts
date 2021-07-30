@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-15 15:48:47
- * @LastEditTime: 2021-07-23 17:12:29
+ * @LastEditTime: 2021-07-28 14:03:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\store\interface.ts
@@ -14,6 +14,7 @@ export type UserInfo =  {
   userType: number
   popFlag: number
   odoUrl: string
+  userCode?: string
   rnAuthIsOverdue: boolean
 }
 export interface UserInfoStateTypes {

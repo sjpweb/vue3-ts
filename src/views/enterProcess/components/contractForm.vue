@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 19:59:22
- * @LastEditTime: 2021-07-23 16:30:05
+ * @LastEditTime: 2021-07-27 15:41:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\contractForm.vue
@@ -43,14 +43,14 @@
             placeholder="请输入短信验证码"
             style="width:calc(100% - 148px)"
           ></el-input>
-          <button
-            type="button"
+          <el-button
+            type="primary"
             :disabled="telDisable"
-            class="lbtn-red btn-send"
+            class="btn send-btn"
             @click="getTelCode"
           >
             {{ telCode }}
-          </button>
+          </el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -127,60 +127,13 @@ function validate() {
 onDeactivated(() => {
   clearInterval(timer);
 });
-//   methods: {
-//     // 定时器
-//     timeEvent() {
-//       let sec = 120;
-//       this.telDisable = true;
-//       // 定时器启动需要1秒时间先改变文字
-//       this.telCode = "120s后重新获取";
-//       this.timer = setInterval(() => {
-//         sec--;
-//         this.telCode = sec + "s后重新获取";
-//         if (sec < 0) {
-//           this.telDisable = false;
-//           this.telCode = "获取验证码";
-//           clearInterval(this.timer);
-//         }
-//       }, 1000);
-//     },
-//     // 获取手机验证码
-//     getTelCode() {
-
-//       api.getAuthCode({ mobile: this.form.mobile }).then(() => {
-//         this.timeEvent();
-//         this.$warning("短信已发送成功");
-//       });
-//     },
-//     validate() {
-//       return new Promise((resolve, reject) => {
-//         this.$refs.form.validate((valid) => {
-//           if (valid) resolve(this.form);
-//           else reject();
-//         });
-//       });
-//     },
-//   },
-//   destroyed() {
-//     // 离开清除定时器
-//     clearInterval(this.timer);
-//   },
-// };
 </script>
 <style scoped lang="scss">
 .contractForm {
   margin: auto;
-  .btns {
-    margin-top: 20px;
-    text-align: center;
-    .btn {
-      margin: 0 8px;
-      &.btn-red {
-        width: 224px;
-        height: 44px;
-        font-size: 16px;
-      }
-    }
+  .btn {
+    width: 138px;
+    height: 40px;
   }
   .tit {
     font-size: 18px;

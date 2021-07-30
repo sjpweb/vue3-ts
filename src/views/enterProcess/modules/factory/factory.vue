@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-20 09:32:05
- * @LastEditTime: 2021-07-22 18:50:21
+ * @LastEditTime: 2021-07-27 14:16:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\modules\factory\factory.vue
@@ -17,7 +17,6 @@
       @artificialCheck="artificialCheck"
     ></CState>
     <ContactsForm v-if="show == 2"></ContactsForm>
-    <ProviderList v-if="show === 3"></ProviderList>
   </div>
 </template>
 <script lang="ts" setup>
@@ -30,6 +29,7 @@ import {
 } from "@/config/state";
 import CSteps from "@/components/CSteps/index.vue";
 import CState from "@/components/CState/index.vue";
+import ContactsForm from "../../components/contactsForm.vue";
 import api from "@/api/common";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";

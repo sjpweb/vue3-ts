@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-06-10 14:17:01
- * @LastEditTime: 2021-07-23 14:36:42
+ * @LastEditTime: 2021-07-30 10:37:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\components\CArea\index.vue
@@ -11,11 +11,12 @@
     <el-dialog
       width="728px"
       :title="title"
-      v-model="visible"
+      v-model="dialogVisible"
       :before-close="cancel"
       :close-on-click-modal="false"
       custom-class="dialog-box"
-      ><div class="title" v-if="clear">
+    >
+      <div class="title" v-if="clear">
         <p>省份</p>
         <p>城市</p>
         <p>区域</p>
@@ -97,8 +98,8 @@
           </p>
         </div>
       </div>
-      <template #footer
-        ><div class="dialog-footer">
+      <template #footer>
+        <div class="dialog-footer">
           <el-button class="lbtn-gray btn" @click="cancel" v-show="multiple"
             >取 消</el-button
           ><el-button
@@ -110,17 +111,17 @@
           ><el-button class="btn-red btn" type="primary" @click="confirmArea()"
             >确 定</el-button
           >
-        </div></template
-      ></el-dialog
-    >
-  </div></template
->
+        </div>
+      </template>
+    </el-dialog>
+  </div>
+</template>
 <script lang="ts" setup>
 import api from "@/api/common.js";
 import { defineProps, ref, reactive, computed, defineEmits } from "vue";
 import { ElMessage } from "element-plus";
 const props = defineProps({
-  visible: {
+  dialogVisible: {
     type: Boolean,
     default: false,
   },

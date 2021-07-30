@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 19:59:22
- * @LastEditTime: 2021-07-23 09:28:18
+ * @LastEditTime: 2021-07-27 15:40:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\verifyForm.vue
@@ -36,7 +36,7 @@
           <button
             type="button"
             :disabled="telDisable"
-            class="lbtn-red btn-send"
+            class="send-btn"
             @click="getTelCode"
           >
             {{ telCode }}
