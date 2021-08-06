@@ -1,21 +1,13 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-16 15:57:33
- * @LastEditTime: 2021-07-28 11:18:41
+ * @LastEditTime: 2021-08-06 17:58:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \jzyf-static3\src\utils\index.ts
+ * @FilePath: \vue3-ts\src\utils\index.ts
  */
 import originJSONP from 'jsonp'
 
-// function param(data: any) {
-//   let url = ''
-//   for (var k in data) {
-//     let value = data[k] !== undefined ? data[k] : ''
-//     url += '&' + k + '=' + encodeURIComponent(value)
-//   }
-//   return url ? url.substring(1) : ''
-// }
  /**
   * jsonp请求
   * url    => 接口
