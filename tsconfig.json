@@ -26,6 +26,9 @@
       "scripthost",
     ]
   },
+  "globals":{
+    "TypeList": "writable"
+  },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

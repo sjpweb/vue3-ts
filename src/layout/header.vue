@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-14 17:08:35
- * @LastEditTime: 2021-07-28 14:55:20
+ * @LastEditTime: 2021-08-03 16:15:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\layout\header.vue
@@ -67,7 +67,6 @@ import { ref, computed, defineProps } from "vue";
 import { useStore } from "@/store";
 import api from "@/api/home";
 import url from "@/config";
-import jsonp from "@/utils";
 defineProps({
   text: {
     type: String,

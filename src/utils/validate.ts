@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-04-16 18:40:45
- * @LastEditTime: 2021-07-30 09:20:49
+ * @LastEditTime: 2021-08-05 18:29:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\utils\validate.ts
@@ -124,9 +124,9 @@ export const checkDate = (
   value: any,
   callback: (...age: any) => void
 ) => {
-  const time1 = Date.parse(value[0]);
-  const time2 = Date.parse(value[1]);
-  const nDays = Math.abs(parseInt("", (time2 - time1) / 1000 / 3600 / 24));
+  const time1 =  value[0].getTime()
+  const time2 = value[1].getTime()
+  const nDays = (time2 - time1) / 1000 / 3600 / 24;
   if (!value) {
     callback(new Error("合同有效期不能为空"));
   }

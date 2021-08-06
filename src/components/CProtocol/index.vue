@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-20 18:19:24
- * @LastEditTime: 2021-07-23 10:17:35
+ * @LastEditTime: 2021-08-06 17:00:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\components\CProtocol\index.vue
@@ -52,12 +52,13 @@ defineProps({
 const emit = defineEmits(["seal"]);
 const checked = ref<boolean>(false);
 function sign() {
-  if (checked.value) {
+  if (!checked.value) {
     ElMessage({
       center: true,
       duration: 2000,
       message: "请选择阅读并勾选同意协议！",
     });
+    return;
   }
   emit("seal");
 }

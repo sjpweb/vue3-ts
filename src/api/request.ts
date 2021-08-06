@@ -2,7 +2,7 @@
  * @Author: sph
  * @Date: 2021-02-24 17:39:06
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-07-28 13:07:26
+ * @LastEditTime: 2021-08-06 17:04:23
  * @Description: 
  */
 
@@ -90,6 +90,7 @@ const handlerResult = (resolve: any, reject: any, result: any, isLogin:boolean|u
     2113, //合同已确认，无法操作！
     2114, //合同已盖章，无法操作！
     2115, //您后台有正在进行的合同保存操作，请稍后尝试！
+    2120, // 无权操作
     3000, //提示
     3003, //您已选择过入驻身份，暂不可更改。
     5000 //服务不可用,请重试！

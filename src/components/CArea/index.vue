@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-06-10 14:17:01
- * @LastEditTime: 2021-07-30 10:37:04
+ * @LastEditTime: 2021-08-05 17:55:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\components\CArea\index.vue
@@ -11,7 +11,7 @@
     <el-dialog
       width="728px"
       :title="title"
-      v-model="dialogVisible"
+      :model-value="dialogVisible"
       :before-close="cancel"
       :close-on-click-modal="false"
       custom-class="dialog-box"
@@ -44,7 +44,9 @@
               :indeterminate="item.isIndeterminate"
               @change="handleChecked(4, item)"
             ></el-checkbox
-            ><span @click="getAreaList(4, item)">{{ item.name }}</span>
+            ><span @click="getAreaList(4, item)">{{
+              item.name || item.label
+            }}</span>
           </p>
         </div>
         <div v-if="cityList.length">
@@ -61,7 +63,9 @@
               :indeterminate="item.isIndeterminate"
               @change="handleChecked(5, item)"
             ></el-checkbox
-            ><span @click="getAreaList(5, item)">{{ item.name }}</span>
+            ><span @click="getAreaList(5, item)">{{
+              item.name || item.label
+            }}</span>
           </p>
         </div>
         <div v-if="countyList.length">
@@ -78,7 +82,9 @@
               :indeterminate="item.isIndeterminate"
               @change="handleChecked(6, item)"
             ></el-checkbox
-            ><span @click="getAreaList(6, item)">{{ item.name }}</span>
+            ><span @click="getAreaList(6, item)">{{
+              item.name || item.label
+            }}</span>
           </p>
         </div>
         <div v-if="townList.length">
@@ -94,37 +100,49 @@
               v-model="item.checked"
               @change="handleChecked(7, item)"
             ></el-checkbox
-            ><span @click="getAreaList(7, item)">{{ item.name }}</span>
+            ><span @click="getAreaList(7, item)">{{
+              item.name || item.label
+            }}</span>
           </p>
         </div>
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button class="lbtn-gray btn" @click="cancel" v-show="multiple"
-            >取 消</el-button
-          ><el-button
-            class="lbtn-gray btn"
+          <button @click="cancel" v-show="multiple" class="lbtn-gray btn">
+            取 消
+          </button>
+          <button
             v-if="clear"
             @click="cancelBtn"
             v-show="multiple"
-            >清 空</el-button
-          ><el-button class="btn-red btn" type="primary" @click="confirmArea()"
-            >确 定</el-button
+            class="lbtn-gray btn"
           >
+            清 空
+          </button>
+          <button @click="confirmArea()" class="btn-red btn">
+            确 定
+          </button>
         </div>
       </template>
     </el-dialog>
   </div>
 </template>
 <script lang="ts" setup>
-import api from "@/api/common.js";
-import { defineProps, ref, reactive, computed, defineEmits } from "vue";
+import api from "@/api/common";
+import { defineProps, ref, computed, defineEmits, watch } from "vue";
 import { ElMessage } from "element-plus";
+import { AreaType } from "@/views/portal/serviceMarket/service";
+interface ProvinceListType {
+  checked?: boolean;
+  isIndeterminate?: boolean;
+  jdAreaId: number;
+  name?: string;
+  label?: string;
+  children?: ProvinceListType[];
+  pid?: number;
+}
 const props = defineProps({
-  dialogVisible: {
-    type: Boolean,
-    default: false,
-  },
+  dialogVisible: Boolean,
   multiple: {
     type: Boolean,
     default: false, // 是否多选
@@ -145,41 +163,43 @@ const props = defineProps({
     type: Boolean,
     default: false, // 展开第一级
   },
+  list: {
+    default: (): ProvinceListType[] => [],
+  },
+  index: {
+    default: Number,
+  },
+  preStore: {
+    default: (): AreaType[] => [],
+  },
 });
-
-interface ProvinceListType {
-  checked: boolean;
-  isIndeterminate: boolean;
-  jdAreaId: number;
-  name: string;
-  children?: ProvinceListType[];
-  pid?: number;
-}
-const emit = defineEmits(["confirmArea", "update:modelValue"]);
+const emit = defineEmits(["confirmArea", "updateVisible"]);
 const indexes = ref<number>(0);
-let store = reactive({});
-let provinceList = reactive<ProvinceListType[]>([]);
-let cityList = reactive<ProvinceListType[]>([]);
-let countyList = reactive<ProvinceListType[]>([]);
-let townList = reactive<ProvinceListType[]>([]);
-let provinceActive: number;
-let cityActive: number;
-let countyListActive: number;
-let townActive: number;
+let provinceList = ref<ProvinceListType[]>([]);
+let cityList = ref<ProvinceListType[]>([]);
+let countyList = ref<ProvinceListType[]>([]);
+let townList = ref<ProvinceListType[]>([]);
+let provinceActive = ref<number>();
+let cityActive = ref<number>();
+let countyListActive = ref<number>();
+let townActive = ref<number>();
 const allChecked = computed({
   get: () => {
-    const leng = provinceList.filter((i) => i.checked);
-    return leng.length == provinceList.length && leng.length > 0;
+    const leng = provinceList.value.filter((i) => i.checked);
+    return leng.length == provinceList.value.length && leng.length > 0;
   },
   set: (newVal) => {
-    recursionSetChecked(provinceList, newVal);
-    cityList = [];
-    countyList = [];
-    townList = [];
+    recursionSetChecked(provinceList.value, newVal);
+    cityList.value = [];
+    countyList.value = [];
+    townList.value = [];
   },
 });
 // 递归设置选中
-function recursionSetChecked(list: ProvinceListType[], val: boolean) {
+function recursionSetChecked(
+  list: ProvinceListType[],
+  val: boolean | undefined
+) {
   list.forEach((item) => {
     item.checked = val;
     item.isIndeterminate = false;
@@ -191,22 +211,23 @@ function recursionSetChecked(list: ProvinceListType[], val: boolean) {
 function hasChildren(list: ProvinceListType | undefined) {
   return list && list.children && list.children.length > 0;
 }
+watch(
+  () => props.dialogVisible,
+  (newVal) => {
+    newVal && initArea();
+  }
+);
 // 初始化
-function init(
-  list: ProvinceListType[],
-  index: number,
-  preStore: ProvinceListType[]
-) {
-  indexes.value = index;
-  if (preStore) {
-    provinceList = preStore;
-    store = preStore;
+function initArea() {
+  indexes.value = props.index;
+  if (props.preStore.length) {
+    provinceList.value = props.preStore;
     return;
   }
-  recursionSetChecked(list, props.defaultChecked);
-  provinceList = list;
-  if (props.unfold && hasChildren(provinceList[0])) {
-    recursionUnfold(provinceList);
+  recursionSetChecked(props.list, props.defaultChecked);
+  provinceList.value = props.list;
+  if (props.unfold && hasChildren(provinceList.value[0])) {
+    recursionUnfold(provinceList.value);
   }
 }
 // 自动展开第一列
@@ -228,22 +249,22 @@ function recursionUnfold(list: ProvinceListType[]) {
 function getAreaList(index: number, item: ProvinceListType) {
   switch (index) {
     case 4:
-      provinceActive = item.jdAreaId;
-      countyList = [];
-      townList = [];
+      provinceActive.value = item.jdAreaId;
+      countyList.value = [];
+      townList.value = [];
       getAreaChildren(item, index);
       break;
     case 5:
-      townList = [];
-      cityActive = item.jdAreaId;
+      townList.value = [];
+      cityActive.value = item.jdAreaId;
       getAreaChildren(item, index);
       break;
     case 6:
-      countyListActive = item.jdAreaId;
+      countyListActive.value = item.jdAreaId;
       getAreaChildren(item, index);
       break;
     case 7:
-      townActive = item.jdAreaId;
+      townActive.value = item.jdAreaId;
   }
 }
 function getAreaChildren(item: ProvinceListType, index: number) {
@@ -265,13 +286,13 @@ function getAreaChildren(item: ProvinceListType, index: number) {
 function setAreaChildren(index: number, data: ProvinceListType[]) {
   switch (index) {
     case 4:
-      cityList = data;
+      cityList.value = data;
       break;
     case 5:
-      countyList = data;
+      countyList.value = data;
       break;
     case 6:
-      townList = data;
+      townList.value = data;
       break;
   }
 }
@@ -295,8 +316,8 @@ async function getChildList(item: ProvinceListType) {
 // 选中节点时
 function handleChecked(index: number, val: ProvinceListType) {
   if (index === 4) {
-    countyList = [];
-    townList = [];
+    countyList.value = [];
+    townList.value = [];
   }
   if (val.checked) val.isIndeterminate = false;
   if (hasChildren(val)) {
@@ -305,26 +326,26 @@ function handleChecked(index: number, val: ProvinceListType) {
   if (val.pid) {
     switch (index) {
       case 5:
-        townList = [];
+        townList.value = [];
         // 修改省级列表
-        getParentList(val, provinceList);
+        getParentList(val, provinceList.value);
         break;
       case 6:
         {
           // 修改市级列表
-          const cityItem = getParentList(val, cityList);
+          const cityItem = getParentList(val, cityList.value);
           // 修改省级列表
-          getParentList(cityItem, provinceList);
+          getParentList(cityItem, provinceList.value);
         }
         break;
       case 7:
         {
           // 修改县级列表
-          const countyItem = getParentList(val, countyList);
+          const countyItem = getParentList(val, countyList.value);
           // 修改市级列表
-          const cityItem = getParentList(countyItem, cityList);
+          const cityItem = getParentList(countyItem, cityList.value);
           // 修改省级列表
-          getParentList(cityItem, provinceList);
+          getParentList(cityItem, provinceList.value);
         }
         break;
     }
@@ -386,31 +407,31 @@ function recursionChecked(arr: ProvinceListType[], list: ProvinceListType[]) {
   }
 }
 function cancel() {
-  cityList = [];
-  countyList = [];
-  townList = [];
-  emit("update:modelValue", false);
+  cityList.value = [];
+  countyList.value = [];
+  townList.value = [];
+  emit("updateVisible", false);
 }
 function cancelBtn() {
-  cityList = [];
-  countyList = [];
-  townList = [];
-  provinceList.forEach((item) => {
+  cityList.value = [];
+  countyList.value = [];
+  townList.value = [];
+  provinceList.value.forEach((item) => {
     item.checked = false;
     item.isIndeterminate = false;
   });
 }
 function confirmArea() {
-  cityList = [];
-  countyList = [];
-  townList = [];
+  cityList.value = [];
+  countyList.value = [];
+  townList.value = [];
   // 非多选直接关闭
   if (!props.multiple) {
-    emit("update:modelValue", false);
+    emit("updateVisible", false);
     return;
   }
   let arr: ProvinceListType[] = [];
-  recursionChecked(arr, provinceList);
+  recursionChecked(arr, provinceList.value);
   if (!props.clear && props.multiple && !arr.length) {
     ElMessage({
       center: true,
@@ -419,7 +440,7 @@ function confirmArea() {
     });
     return;
   }
-  emit("confirmArea", arr, indexes.value, provinceList);
+  emit("confirmArea", arr, indexes.value, provinceList.value);
   // 如果有清空按钮，则在每次点击确定之后清空选项
   if (props.clear) {
     cancelBtn();

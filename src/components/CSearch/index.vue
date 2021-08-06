@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-07-30 11:30:08
- * @LastEditTime: 2021-07-30 16:06:51
+ * @LastEditTime: 2021-08-03 16:32:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\components\CSearch\index.vue
@@ -19,8 +19,11 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { ref, defineEmits } from "vue";
+const facilitatorName = ref<string>("");
+const emit = defineEmits(["search"]);
 function search() {
-  console.log(1);
+  emit("search", facilitatorName.value);
 }
 </script>
 <style scoped lang="scss">

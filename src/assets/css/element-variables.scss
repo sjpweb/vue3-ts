@@ -1,5 +1,21 @@
 @import '_variables';
 
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: $red-color;
+  background-color: $red-color;
+}
+
+.el-radio__inner:hover {
+  border-color: $red-color;
+}
+
+.el-radio__input.is-checked+.el-radio__label {
+  color: $red-color;
+}
+
+.el-radio {
+  margin-right: 8px;
+}
 
 .el-input__inner {
   border-radius: 0;
@@ -133,6 +149,48 @@
       background: $red-color;
       border-color: $red-color;
       color: #fff;
+    }
+  }
+}
+
+.dialog-box {
+  .el-dialog__header {
+    height: 30px;
+    background: #fafafa;
+    line-height: 30px;
+    padding: 0 20px;
+
+    .el-dialog__title {
+      font-size: 12px;
+    }
+
+    .el-dialog__headerbtn {
+      display: none;
+    }
+  }
+
+  .el-dialog__body {
+    padding: 0;
+  }
+
+  .dialog-footer {
+    .btn {
+      width: 90px;
+      height: 32px;
+      margin-left: 6px;
+      outline: none;
+    }
+
+    .lbtn-gray {
+      border: 1px solid #e0e0e0;
+      color: #333;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .lbtn-gray:hover {
+      border-color: #e1251b;
+      color: #e1251b;
     }
   }
 }

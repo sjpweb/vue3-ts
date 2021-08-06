@@ -1,7 +1,7 @@
 <!--
  * @Author: sjp
  * @Date: 2021-04-16 16:57:01
- * @LastEditTime: 2021-07-27 13:56:50
+ * @LastEditTime: 2021-08-04 18:07:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\views\enterProcess\components\contactsForm.vue
@@ -177,10 +177,10 @@ const props = {
 };
 const phoneCheck = ref<boolean>(false);
 const EmailCheck = ref<boolean>(false);
-const phoneFlag = ref<boolean>(false);
-const phoneExpireFlag = ref<boolean>(false);
-const emailFlag = ref<boolean>(false);
-const emailExpireFlag = ref<boolean>(false);
+const phoneFlag = ref<boolean>(true);
+const phoneExpireFlag = ref<boolean>(true);
+const emailFlag = ref<boolean>(true);
+const emailExpireFlag = ref<boolean>(true);
 const placeholder = ref<string>("");
 const formDome = ref(null as HTMLFormElement | null);
 const basicFormDome = ref(null as HTMLFormElement | null);
@@ -188,9 +188,9 @@ const oldMachineFormDome = ref(null as HTMLFormElement | null);
 interface FormType {
   userName: string;
   userPhone: string;
-  mobileCode: string;
+  mobileCode?: string;
   userEmail: string;
-  emailCode: string;
+  emailCode?: string;
 }
 interface BasicFormType {
   userProvinceId: string | number;
@@ -203,7 +203,7 @@ interface OldMachineFormType extends BasicFormType {
   oldMachineArea: number[];
   oldmachineDeliveryContractNo: string;
 }
-let form = reactive<FormType>({
+const form = ref<FormType>({
   userName: "",
   userPhone: "",
   mobileCode: "",
@@ -307,7 +307,7 @@ onBeforeMount(() => {
 });
 async function init() {
   const { data }: any = await api.queryPhoneInfoByUserId();
-  form = data;
+  form.value = data;
   if (userType === 5) {
     oldMachineForm.userAddress = data.userAddress;
     oldMachineForm.oldmachineDeliveryContractNo =
@@ -362,9 +362,10 @@ async function getArea(
 function getTelCode() {
   if (formDome.value) {
     formDome.value.validateField("userPhone", (val: boolean) => {
+      console.log(form.value.userPhone);
       if (!val) {
         phoneCheck.value = true;
-        api.getPhoneCode({ mobile: form.userPhone }).then((res: any) => {
+        api.getPhoneCode({ mobile: form.value.userPhone }).then((res: any) => {
           ElMessage({
             center: true,
             duration: 2000,
@@ -384,7 +385,7 @@ function getEmailCode() {
     formDome.value.validateField("userEmail", (val: boolean) => {
       if (!val) {
         EmailCheck.value = true;
-        api.getEmailCode({ email: form.userEmail }).then((res: any) => {
+        api.getEmailCode({ email: form.value.userEmail }).then((res: any) => {
           ElMessage({
             center: true,
             duration: 2000,
@@ -428,13 +429,7 @@ async function btnNext() {
   let flag = false;
   let OutletsFlag = false;
   let nextFlag = false;
-  let obj = {
-    userName: form.userName,
-    userPhone: form.userPhone,
-    userEmail: form.userEmail,
-    mobileCode: form.mobileCode,
-    emailCode: form.emailCode,
-  };
+  let obj = form.value;
   if (formDome.value) {
     formDome.value.validate(async (valid: boolean) => {
       if (valid) {

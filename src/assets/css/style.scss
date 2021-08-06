@@ -24,6 +24,11 @@ body {
   color: $text-color !important;
 }
 
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 .send-btn {
   width: 138px;
   height: 40px;
@@ -40,5 +45,32 @@ a {
 
   &:hover {
     color: $red-color;
+  }
+}
+
+.btn {
+  border: none;
+}
+
+.btn-red {
+  background: $red-color;
+  color: $white-color;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #E75048;
+    color: $white-color !important;
+  }
+
+  &:active {
+    background: #CA2118;
+    color: $white-color;
+  }
+
+  &[disabled="disabled"] {
+    border: none;
+    background: $text-ngray-color;
+    color: $white-color;
   }
 }

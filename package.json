@@ -14,7 +14,7 @@
     "element-plus": "^1.0.2-beta.55",
     "gsap": "^3.7.1",
     "jsonp": "^0.2.1",
-    "vue": "^3.0.0",
+    "vue": "^3.0.4",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0",
     "vuex-persistedstate": "^4.0.0-beta.3"

@@ -1,7 +1,7 @@
 /*
  * @Author: sjp
  * @Date: 2021-07-13 15:09:27
- * @LastEditTime: 2021-07-30 13:46:57
+ * @LastEditTime: 2021-08-06 16:59:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \jzyf-static3\src\router\index.ts
@@ -28,26 +28,26 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ispList',
         component: () => import('@/views/portal/serviceMarket/ispList.vue')
       },
-      // {
-      //   path: '/ispSign',
-      //   name: 'ispSign',
-      //   component: () => import('@/views/ispSign/ispSign')
-      // },
-      // {
-      //   path: '/protocol',
-      //   name: 'protocol',
-      //   component: () => import('@/views/ispSign/protocol')
-      // },
-      // {
-      //   path: '/succeed',
-      //   name: 'succeed',
-      //   component: () => import('@/views/ispSign/succeed')
-      // },
-      // {
-      //   path: '/ispIndex',
-      //   name: 'ispIndex',
-      //   component: () => import('@/views/ispIndex/ispIndex')
-      // }
+      {
+        path: '/ispSign',
+        name: 'ispSign',
+        component: () => import('@/views/portal/serviceMarket/ispSign.vue')
+      },
+      {
+        path: '/protocol',
+        name: 'protocol',
+        component: () => import('@/views/portal/serviceMarket/protocol.vue')
+      },
+      {
+        path: '/succeed',
+        name: 'succeed',
+        component: () => import('@/views/portal/serviceMarket/succeed.vue')
+      },
+      {
+        path: '/ispIndex',
+        name: 'ispIndex',
+        component: () => import('@/views/portal/serviceMarket/ispIndex.vue')
+      }
     ]
   },
   {
